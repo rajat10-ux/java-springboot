@@ -1,7 +1,9 @@
 package com.digest.dertyu.Controllers;
 
 import com.digest.dertyu.Entitites.JournalEntity;
+import com.digest.dertyu.Entitites.User;
 import com.digest.dertyu.Service.JournalEntryService;
+import com.digest.dertyu.Service.UserEntryService;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +19,23 @@ import java.util.*;
 public class JournalEntryControllerV2 {
     //private Map<Long,JournalEntity>journalEntityMap=new HashMap<>();
     private final JournalEntryService journalEntryService;
-    @GetMapping("/get")
-    public ResponseEntity<List<JournalEntity>>getAll(){
+    private final UserEntryService userEntryService;
+    @GetMapping("/get/{name}")
+    public ResponseEntity<List<JournalEntity>>getAllJournalEntriesOfUser(@PathVariable String name){
+        User byUserName = userEntryService.findByUserName(name);
+        List<JournalEntity> journalEntities = byUserName.getJournalEntities();
         try {
-            return new ResponseEntity<>(journalEntryService.getAllEntry(),HttpStatus.OK);
+            return new ResponseEntity<>(journalEntities,HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PostMapping("/post")
-    public ResponseEntity<JournalEntity>createJournal(@RequestBody JournalEntity journalEntity){
+    @PostMapping("/post/{name}")
+    public ResponseEntity<JournalEntity>createJournal(@RequestBody JournalEntity journalEntity,
+                                                      @PathVariable String name){
         try {
-            return new ResponseEntity<>(journalEntryService.createEntry(journalEntity),HttpStatus.CREATED);
+            return new ResponseEntity<>(journalEntryService.createEntry(journalEntity,name),HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -45,18 +51,20 @@ public class JournalEntryControllerV2 {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean>deleteByid(@PathVariable ObjectId id){
+    @DeleteMapping("/{id}/{name}")
+    public ResponseEntity<Boolean>deleteById(@PathVariable ObjectId id,@PathVariable String name){
         try {
-            return new ResponseEntity<>(journalEntryService.deleteByIdherE(id),HttpStatus.FOUND);
+            return new ResponseEntity<>(journalEntryService.deleteByIdherE(id,name),HttpStatus.FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @PatchMapping("/{id}")
-    public ResponseEntity<JournalEntity>updateBYId(@PathVariable ObjectId id,@RequestBody JournalEntity journalEntity){
+    @PatchMapping("/update/{id}/{name}")
+    public ResponseEntity<JournalEntity>updateBYId(@PathVariable ObjectId id,
+                                                   @RequestBody JournalEntity journalEntity,
+                                                   @PathVariable String name){
         try {
-            return new ResponseEntity<>(journalEntryService.updateyhis(id,journalEntity),HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(journalEntryService.updateyhis(id,journalEntity,name),HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

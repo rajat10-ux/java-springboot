@@ -1,10 +1,10 @@
 package com.digest.dertyu.Service;
 
 import com.digest.dertyu.Entitites.JournalEntity;
+import com.digest.dertyu.Entitites.User;
 import com.digest.dertyu.Repository.JournalEntryRepository;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,10 +16,14 @@ import java.util.Optional;
 public class JournalEntryService {
 
     private final  JournalEntryRepository journalEntryRepository;
-
-    public JournalEntity createEntry(JournalEntity journalEntity){
+    private final UserEntryService userEntryService;
+    public JournalEntity createEntry(JournalEntity journalEntity, String name){
+        User byUserName = userEntryService.findByUserName(name);
         journalEntity.setDate(LocalDateTime.now());
-      return journalEntryRepository.save(journalEntity);
+        JournalEntity saved = journalEntryRepository.save(journalEntity);
+        byUserName.getJournalEntities().add(saved);
+        userEntryService.createEntry(byUserName);
+        return saved;
     }
     public List<JournalEntity>getAllEntry(){
         return journalEntryRepository.findAll();
@@ -30,13 +34,17 @@ public class JournalEntryService {
         return journalEntryRepository.findById(String.valueOf(myId));
     }
 
-    public Boolean deleteByIdherE(ObjectId id) {
+    public Boolean deleteByIdherE(ObjectId id, String name) {
+        User byUserName = userEntryService.findByUserName(name);
+        List<JournalEntity> journalEntities = byUserName.getJournalEntities();
+        journalEntities.removeIf(i -> i.getId().equals(id));
+        userEntryService.createEntry(byUserName);
         journalEntryRepository.deleteById(String.valueOf(id));
         return true;
     }
 
 
-    public JournalEntity updateyhis(ObjectId id, JournalEntity journalEntity) {
+    public JournalEntity updateyhis(ObjectId id, JournalEntity journalEntity, String name) {
         JournalEntity  old=journalEntryRepository.findById(String.valueOf(id)).orElse(null);
         if(old!=null){
             old.setContent(journalEntity.getContent());
