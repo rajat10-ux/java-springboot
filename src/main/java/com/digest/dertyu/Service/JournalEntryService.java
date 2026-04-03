@@ -41,6 +41,7 @@ public class JournalEntryService {
         return journalEntryRepository.findById(String.valueOf(myId));
     }
 
+    @Transactional
     public Boolean deleteByIdherE(ObjectId id, String name) {
         User byUserName = userEntryService.findByUserName(name);
         List<JournalEntity> journalEntities = byUserName.getJournalEntities();
@@ -59,5 +60,8 @@ public class JournalEntryService {
         }
         journalEntryRepository.save(old);
         return old;
+    }
+    public List<JournalEntity>findByUserName(String userName){
+        return null;
     }
 }
