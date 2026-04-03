@@ -4,8 +4,11 @@ import com.digest.dertyu.Entitites.User;
 import com.digest.dertyu.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +17,18 @@ import java.util.Optional;
 public class UserEntryService {
 
     private final UserRepository userRepository;
+    private static final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 
     public User createEntry(User user){
       return userRepository.save(user);
     }
+
+    public User createNewEntry(User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Arrays.asList("USER"));
+        return userRepository.save(user);
+    }
+
     public List<User> getAllEntry(){
         return userRepository.findAll();
     }
@@ -40,7 +51,7 @@ public class UserEntryService {
             byUserName.setUserName(user.getUserName());
             byUserName.setPassword(user.getPassword());
         }
-        userRepository.save(byUserName);
+        createNewEntry(byUserName);
         return byUserName;
     }
 }
