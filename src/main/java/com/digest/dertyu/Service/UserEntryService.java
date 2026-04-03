@@ -54,4 +54,10 @@ public class UserEntryService {
         createNewEntry(byUserName);
         return byUserName;
     }
+
+    public void createAdmin(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Arrays.asList("ADMIN","USER"));
+        userRepository.save(user);
+    }
 }
