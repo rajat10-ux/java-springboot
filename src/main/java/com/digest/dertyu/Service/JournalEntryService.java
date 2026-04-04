@@ -6,12 +6,14 @@ import com.digest.dertyu.Exceptions.TransactionException;
 import com.digest.dertyu.Repository.JournalEntryRepository;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class JournalEntryService {
 
     private final  JournalEntryRepository journalEntryRepository;
     private final UserEntryService userEntryService;
+
     @Transactional
     public JournalEntity createEntry(JournalEntity journalEntity, String name){
         try {
@@ -41,6 +44,7 @@ public class JournalEntryService {
         return journalEntryRepository.findById(String.valueOf(myId));
     }
 
+    @Transactional
     public Boolean deleteByIdherE(ObjectId id, String name) {
         User byUserName = userEntryService.findByUserName(name);
         List<JournalEntity> journalEntities = byUserName.getJournalEntities();
@@ -59,5 +63,8 @@ public class JournalEntryService {
         }
         journalEntryRepository.save(old);
         return old;
+    }
+    public List<JournalEntity>findByUserName(String userName){
+        return null;
     }
 }
