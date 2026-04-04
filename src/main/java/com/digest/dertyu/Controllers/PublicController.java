@@ -15,9 +15,8 @@ public class PublicController {
 
     @GetMapping("/health")
     public String healthCheck(){
-        return "Ok";
+        return "yes i am ok";
     }
-    
     @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestBody User user){
         try {
