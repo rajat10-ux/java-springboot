@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://rajat:rajat@cluster0.oz3xve9.mongodb.net/?appName=Cluster0
+      database: jor
+      auto-index-creation: true
+
+
+server:
+  port: 8082
+  servlet:
+    context-path: /journal
