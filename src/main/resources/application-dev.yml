@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://rajat:rajat@cluster0.oz3xve9.mongodb.net/?appName=Cluster0
+      uri: mongodb+srv://rajat:<onkk>@cluster0.oz3xve9.mongodb.net/?appName=Cluster0
       database: jor
       auto-index-creation: true
 
